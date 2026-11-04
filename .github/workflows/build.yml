@@ -38,7 +38,7 @@ jobs:
           x86_64-w64-mingw32-g++ -O2 -std=c++17 sim.cpp -DSDL_MAIN_HANDLED \
             -I"$SDL2_MINGW/include/SDL2" -I"$SDL2_MINGW/include" \
             -L"$SDL2_MINGW/lib" \
-            -lmingw32 -lSDL2main -lSDL2 \
+            -lmingw32 -lSDL2main -lSDL2 -lws2_32 \
             -static-libgcc -static-libstdc++ \
             -o dist/windows/sim.exe
           cp "$SDL2_MINGW/bin/SDL2.dll" dist/windows/
