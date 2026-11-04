@@ -32,6 +32,7 @@ jobs:
         run: |
           mkdir -p dist/linux dist/windows
           g++ -O2 -std=c++17 sim.cpp -o dist/linux/sim $(sdl2-config --cflags --libs)
+          cp startFlightGear.sh dist/linux/
 
       - name: Build (Windows)
         run: |
@@ -42,6 +43,7 @@ jobs:
             -static-libgcc -static-libstdc++ \
             -o dist/windows/sim.exe
           cp "$SDL2_MINGW/bin/SDL2.dll" dist/windows/
+          cp startFlightGear.bat dist/windows/
           # cp -r assets dist/linux/ && cp -r assets dist/windows/   # if you have resources
 
       - name: Upload Linux
