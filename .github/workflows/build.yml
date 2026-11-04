@@ -1,0 +1,59 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  SDL2_VERSION: 2.30.9   # check https://github.com/libsdl-org/SDL/releases for the latest 2.x
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 libsdl2-dev
+
+      - name: Download SDL2 (MinGW dev package)
+        run: |
+          curl -L -o sdl2-mingw.tar.gz \
+            https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/SDL2-devel-${SDL2_VERSION}-mingw.tar.gz
+          tar -xzf sdl2-mingw.tar.gz
+          echo "SDL2_MINGW=$PWD/SDL2-${SDL2_VERSION}/x86_64-w64-mingw32" >> $GITHUB_ENV
+
+      - name: Build (Linux)
+        run: |
+          mkdir -p dist/linux dist/windows
+          g++ -O2 -std=c++17 src/*.cpp -o dist/linux/myapp $(sdl2-config --cflags --libs)
+
+      - name: Build (Windows)
+        run: |
+          x86_64-w64-mingw32-g++ -O2 -std=c++17 src/*.cpp \
+            -I"$SDL2_MINGW/include/SDL2" -I"$SDL2_MINGW/include" \
+            -L"$SDL2_MINGW/lib" \
+            -lmingw32 -lSDL2main -lSDL2 \
+            -static-libgcc -static-libstdc++ \
+            -o dist/windows/myapp.exe
+          cp "$SDL2_MINGW/bin/SDL2.dll" dist/windows/
+          # cp -r assets dist/linux/ && cp -r assets dist/windows/   # if you have resources
+
+      - name: Upload Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: myapp-linux
+          path: dist/linux
+          if-no-files-found: error
+
+      - name: Upload Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: myapp-windows
+          path: dist/windows
+          if-no-files-found: error
