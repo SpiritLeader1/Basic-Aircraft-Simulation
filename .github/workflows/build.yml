@@ -35,13 +35,13 @@ jobs:
 
       - name: Build (Windows)
         run: |
-          x86_64-w64-mingw32-g++ -O2 -std=c++17 -DSDL_MAIN_HANDLED sim.cpp -o dist/windows/sim.exe \
-            -I$SDL_MINGW/include -I$SDL_MINGW/include/SDL2 \
-            -L$SDL_MINGW/lib \
-            -lSDL2 -lws2_32 \
+          x86_64-w64-mingw32-g++ -O2 -std=c++17 sim.cpp -DSDL_MAIN_HANDLED \
+            -I"$SDL2_MINGW/include/SDL2" -I"$SDL2_MINGW/include" \
+            -L"$SDL2_MINGW/lib" \
+            -lmingw32 -lSDL2main -lSDL2 \
             -static-libgcc -static-libstdc++ \
+            -o dist/windows/sim.exe
           cp "$SDL2_MINGW/bin/SDL2.dll" dist/windows/
-        
           # cp -r assets dist/linux/ && cp -r assets dist/windows/   # if you have resources
 
       - name: Upload Linux
