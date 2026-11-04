@@ -31,29 +31,29 @@ jobs:
       - name: Build (Linux)
         run: |
           mkdir -p dist/linux dist/windows
-          g++ -O2 -std=c++17 src/*.cpp -o dist/linux/myapp $(sdl2-config --cflags --libs)
+          g++ -O2 -std=c++17 sim.cpp -o dist/linux/sim $(sdl2-config --cflags --libs)
 
       - name: Build (Windows)
         run: |
-          x86_64-w64-mingw32-g++ -O2 -std=c++17 src/*.cpp \
+          x86_64-w64-mingw32-g++ -O2 -std=c++17 sim.cpp \
             -I"$SDL2_MINGW/include/SDL2" -I"$SDL2_MINGW/include" \
             -L"$SDL2_MINGW/lib" \
             -lmingw32 -lSDL2main -lSDL2 \
             -static-libgcc -static-libstdc++ \
-            -o dist/windows/myapp.exe
+            -o dist/windows/sim.exe
           cp "$SDL2_MINGW/bin/SDL2.dll" dist/windows/
           # cp -r assets dist/linux/ && cp -r assets dist/windows/   # if you have resources
 
       - name: Upload Linux
         uses: actions/upload-artifact@v4
         with:
-          name: myapp-linux
+          name: sim-linux
           path: dist/linux
           if-no-files-found: error
 
       - name: Upload Windows
         uses: actions/upload-artifact@v4
         with:
-          name: myapp-windows
+          name: sim-windows
           path: dist/windows
           if-no-files-found: error
