@@ -22,7 +22,7 @@
   #include <unistd.h>
   typedef int sock_t;
 #endif
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "net_fdm.hpp"
 
 // FlightGear FDM Packet CRC Check
